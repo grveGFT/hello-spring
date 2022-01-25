@@ -21,8 +21,8 @@ public class DemoProjectApplication {
 	}
 
 	@GetMapping("/")
-	public String mmain(@RequestParam(value = "name", defaultValue = "World") String name){
-		return String.format("Hello main %s!", name);
+	public String root(){
+		return "Hola ke ase";
 
 	}
 
