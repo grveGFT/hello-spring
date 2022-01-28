@@ -20,6 +20,13 @@ public class DemoProjectApplication {
 
 	}
 
+	@GetMapping("/Add")
+	public Integer hello(@RequestParam(value = "a", defaultValue = "0") Integer a,
+	@RequestParam(value = "b", defaultValue = "0") Integer b){
+		return a+b;
+
+	}
+
 	@GetMapping("/")
 	public String root(){
 		return "Hola ke ase";

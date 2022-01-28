@@ -21,12 +21,14 @@ class DemoProjectApplicationTests {
 
 	@Test
 	void rootTest(@Autowired TestRestTemplate restTemplate) {
-		assertThat(restTemplate.getForObject("/", String.class)).isEqualTo("Hola ke ase");
+		assertThat(restTemplate.getForObject("/", String.class))
+				.isEqualTo("Hola ke ase");
 	}
 
 	@Test
 	void helloVoidTest(@Autowired TestRestTemplate restTemplate) {
-		assertThat(restTemplate.getForObject("/hello", String.class)).isEqualTo("Hello World!");
+		assertThat(restTemplate.getForObject("/hello", String.class))
+				.isEqualTo("Hello World!");
 	}
 
 	@Test
@@ -34,7 +36,16 @@ class DemoProjectApplicationTests {
 //				   @RequestParam(value = "name") String name) {
 //		assertThat(restTemplate.getForObject("/"))
 //		assertThat(restTemplate.getForObject("/hello", String.class)).isEqualTo("Hello World!");
-		assertThat(restTemplate.getForObject("/hello?name=Gaudir", String.class)).isEqualTo("Hello Gaudir!");
+		assertThat(restTemplate.getForObject("/hello?name=Gaudir", String.class))
+				.isEqualTo("Hello Gaudir!");
 	}
+
+	@Test
+	void canAdd(@Autowired TestRestTemplate restTemplate){
+		assertThat(restTemplate.getForObject("/Add?a=1&b=2", String.class))
+				.isEqualTo("3");
+	}
+
+
 
 }
