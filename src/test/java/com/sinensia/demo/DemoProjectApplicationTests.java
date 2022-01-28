@@ -1,6 +1,8 @@
 package com.sinensia.demo;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -46,6 +48,40 @@ class DemoProjectApplicationTests {
 				.isEqualTo("3");
 	}
 
+	@Test
+	void canAddZero(@Autowired TestRestTemplate restTemplate){
+		assertThat(restTemplate.getForObject("/Add?a=0&b=2", String.class))
+				.isEqualTo("2");
+	}
+
+	@Test
+	void canAddNegative(@Autowired TestRestTemplate restTemplate){
+		assertThat(restTemplate.getForObject("/Add?a=1&b=-2", String.class))
+				.isEqualTo("-1");
+	}
+
+	@Test
+	void canAddNULL(@Autowired TestRestTemplate restTemplate){
+		assertThat(restTemplate.getForObject("/Add?a=&b=2", String.class))
+				.isEqualTo("2");
+	}
+
+	@Test
+	void helloNames(@Autowired TestRestTemplate restTemplate){
+		String[] arr = {"Javier","Rodriguez","Javier%20Arturo"};
+		for (String name: arr) {
+			assertThat(restTemplate.getForObject("/hello?name="+name, String.class))
+					.isEqualTo("Hello "+name+"!");
+		}
+	}
+
+	@Autowired TestRestTemplate restTemplate;
+	@ParameterizedTest
+	@ValueSource(strings={"Javier","Javier+Arturo","Rodriguez","Javier%20Arturo"})
+	void helloParamNames( String name){
+		assertThat(restTemplate.getForObject("/hello?name="+name, String.class))
+				.isEqualTo("Hello "+name+"!");
+	}
 
 
 }
