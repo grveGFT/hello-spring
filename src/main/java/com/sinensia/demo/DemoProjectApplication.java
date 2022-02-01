@@ -14,33 +14,39 @@ public class DemoProjectApplication {
 		SpringApplication.run(DemoProjectApplication.class, args);
 	}
 
-	@GetMapping("/hello")
-	public String hello(@RequestParam(value = "name", defaultValue = "World") String name){
-		return String.format("Hello %s!", name);
-
-	}
-
-
-	@GetMapping("/add")
-	public Object add(
-			@RequestParam(value = "a", defaultValue = "0") Float a,
-			@RequestParam(value = "b", defaultValue = "0") Float b){
-
-		Float sum = a+b;
-		Float decimals = sum - sum.intValue();
-		if(decimals!=0){
-			return sum;
-		}
-
-		return sum.intValue();
-
-	}
-
-
 	@GetMapping("/")
-	public String root(){
+	public String root() {
 		return "Hola ke ase";
 	}
 
+	@GetMapping("/hello")
+	public String hello(@RequestParam(value = "name", defaultValue = "World") String name) {
+		return String.format("Hello %s!", name);
+	}
 
+	@GetMapping("/add")
+	public Object add(
+			@RequestParam(value="a", defaultValue = "0") Float a,
+			@RequestParam(value="b", defaultValue = "0") Float b
+	) {
+		Float sum = a+b;
+		Float decimals = sum - sum.intValue();
+		if(decimals!=0) {
+			return sum;
+		}
+		return Integer.valueOf(sum.intValue());
+	}
+
+	@GetMapping("/multiply")
+	public Object multiply(
+			@RequestParam(value="a", defaultValue = "0") Float a,
+			@RequestParam(value="b", defaultValue = "0") Float b
+	) {
+		Float product = a * b;
+		Float decimals = product - product.intValue();
+		if(decimals!=0) {
+			return product;
+		}
+		return Integer.valueOf(product.intValue());
+	}
 }
