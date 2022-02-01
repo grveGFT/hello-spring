@@ -4,7 +4,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvFileSource;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +11,11 @@ import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWeb
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.test.web.reactive.server.WebTestClient;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestClientException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(webEnvironment= WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient
@@ -110,57 +108,68 @@ class DemoProjectApplicationTests {
 				.isEqualTo(expected);
 	}
 
-	@DisplayName("multiple additions")
-	@ParameterizedTest(name="[{index}] {0} + {1} = {2}")
-	@CsvSource({
-			"1,2,3",
-			"1,1,2",
-			"1.0, 1.0, 2",
-			"1, -2, -1",
-			"1.5, 2, 3.5",
-			"'', 2, 2",
-			"null,2,2",
-			"hola, 2, ",
-			"1.5,1.5, 3"
-	})
-	void canAddCsvParameterized(String a, String b, String expected){
-		assertThat(restTemplate.getForObject("/add?a="+a+"&b="+b, String.class)).isEqualTo(expected);
-	}
-
-	@Test
-	void canAddExceptionJsonString(){
-		assertThat(restTemplate.getForObject("/add?a=string&b=1", String.class).indexOf("Bad request")).isGreaterThan(-1);
-	}
-
-	@Test
-	void canAddFloat(){
-		assertThat(restTemplate.getForObject("/add?a=1.5&b=2", Float.class)).isEqualTo(3.5F);
-	}
-
-	@Test
-	void canAddFloatException(){
-		Exception thrown = assertThrows(RestClientException.class, ()->{
-			restTemplate.getForObject("/add?a=hola&b=2", Float.class);
-		});
-	}
 
 	@Nested
 	@DisplayName(value="Application tests")
-	class AppTests{
+	class AppTests {
 
 		@Autowired
 		private DemoProjectApplication app;
 
-		@Test
-		void appCanAddReturnsInteger(){
-			assertThat(app.add(1f,2f)).isEqualTo(3);
+
+		@DisplayName("multiple additions")
+		@ParameterizedTest(name = "[{index}] {0} + {1} = {2}")
+		@CsvSource({
+				"1,2,3",
+				"1,1,2",
+				"1.0, 1.0, 2",
+				"1, -2, -1",
+				"1.5, 2, 3.5",
+				"'', 2, 2",
+				"null,2,2",
+				"hola, 2, ",
+				"1.5,1.5, 3"
+		})
+		void canAddCsvParameterized(String a, String b, String expected) {
+			assertThat(restTemplate.getForObject("/add?a=" + a + "&b=" + b, String.class)).isEqualTo(expected);
 		}
 
 		@Test
-		void appCanAddReturnsFloat(){
-			assertThat(app.add(1f,2f)).isEqualTo(3f);
+		void canAddExceptionJsonString() {
+			assertThat(restTemplate.getForObject("/add?a=string&b=1", String.class).indexOf("Bad request")).isGreaterThan(-1);
 		}
 
+		@Test
+		void canAddFloat() {
+			assertThat(restTemplate.getForObject("/add?a=1.5&b=2", Float.class)).isEqualTo(3.5F);
+		}
+
+		@Test
+		void canAddFloatException() {
+			Exception thrown = assertThrows(RestClientException.class, () -> {
+				restTemplate.getForObject("/add?a=hola&b=2", Float.class);
+			});
+		}
+
+		@Test
+		void appCanAddReturnsInteger() {
+			assertThat(app.add(1f, 2f)).isEqualTo(3);
+		}
+
+		@Test
+		void appCanAddReturnsFloat() {
+			assertThat(app.add(1f, 2f)).isEqualTo(3f);
+		}
+
+		@Test
+		void appCanAddNull() {
+			Exception thrown = assertThrows(NullPointerException.class, () -> {
+				Float ret = (Float) app.add(null, 2f);
+			});
+			assertTrue(thrown.toString().contains("NullPointerException"));
+			//alternatively check thrown.getMessage().contains("");
+
+		}
 	}
 
 

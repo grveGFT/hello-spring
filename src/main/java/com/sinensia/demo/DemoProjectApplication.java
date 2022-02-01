@@ -25,6 +25,7 @@ public class DemoProjectApplication {
 	public Object add(
 			@RequestParam(value = "a", defaultValue = "0") Float a,
 			@RequestParam(value = "b", defaultValue = "0") Float b){
+
 		Float sum = a+b;
 		Float decimals = sum - sum.intValue();
 		if(decimals!=0){
